@@ -1,0 +1,80 @@
+const express = require('express');
+const router = express.Router();
+const mongoose = require('mongoose');
+
+const todo = require("../models/todo");
+
+router.get('/',(req,res,next)=>{
+    todo.find()
+    .exec()
+    .then(result =>{
+        const response = {
+            count:result.length,
+            todos:result.map(todo =>{
+                return {
+                    id:todo.id,
+                    content:todo.content
+                }
+            })
+        };
+        res.status(200).json(response);
+    })
+    .catch(error => res.status(500).json({
+        error:error
+    }));
+
+});
+
+router.post('/',(req,res,next)=>{
+    const obj = new todo({
+        id:new mongoose.Types.ObjectId(),
+        content:req.body.content
+    });
+
+    obj.save()
+    .then(result =>{
+        console.log(result);
+        res.status(201).json({
+            messege:"new todo created"
+        });
+    })
+    .catch(err=>{
+        console.log(err);
+        res.status(500).json({
+            error:err
+        });
+    });
+});
+
+router.patch('/',(req,res,next)=>{
+    const id = req.body.id;
+    const updates = {};
+    updates["content"] = req.body.content;
+    todo.updateOne({id:id},{$set:updates})
+    .then(result=>{
+        console.log(result);
+        res.status(200).json({
+            messege:"succesfully patched!"
+        });
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json(err);
+    });
+});
+
+router.delete('/',(req,res,next)=>{
+    const id = req.body.id;
+    todo.deleteOne({id:id}).exec()
+    .then(result =>{
+        console.log(result);
+        res.status(200).json({
+            messege:"deletion successfull!"
+        });
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json(err);
+    })
+})
+module.exports = router;
