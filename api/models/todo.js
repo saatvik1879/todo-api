@@ -2,7 +2,8 @@ const mongoose = require("mongoose");
 
 const todoSchema = mongoose.Schema({
     id : mongoose.Schema.Types.ObjectId,
-    content: {type:String,required:true}
+    todo: {type:String,required:true},
+    isChecked: {type : Boolean , default:false}
 });
 
 module.exports = mongoose.model('ToDo',todoSchema);

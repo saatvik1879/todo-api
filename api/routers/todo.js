@@ -28,7 +28,8 @@ router.get('/',(req,res,next)=>{
 router.post('/',(req,res,next)=>{
     const obj = new todo({
         id:new mongoose.Types.ObjectId(),
-        content:req.body.content
+        todo:req.body.todo,
+        isChecked:false
     });
 
     obj.save()
@@ -49,7 +50,8 @@ router.post('/',(req,res,next)=>{
 router.patch('/',(req,res,next)=>{
     const id = req.body.id;
     const updates = {};
-    updates["content"] = req.body.content;
+    updates["todo"] = req.body.todo;
+    updates["isChecked"] = req.body.isChecked;
     todo.updateOne({id:id},{$set:updates})
     .then(result=>{
         console.log(result);
