@@ -8,15 +8,15 @@ router.get('/',(req,res,next)=>{
     todo.find()
     .exec()
     .then(result =>{
-        const response = {
-            count:result.length,
-            todos:result.map(todo =>{
+        const response = result.map(todo =>{
                 return {
                     id:todo.id,
-                    content:todo.content
+                    todo:todo.todo,
+                    isChecked:todo.isChecked
                 }
-            })
-        };
+            });
+
+        
         res.status(200).json(response);
     })
     .catch(error => res.status(500).json({
